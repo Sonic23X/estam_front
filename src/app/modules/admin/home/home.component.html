@@ -1,0 +1,87 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="">
+        <div class="flex flex-col w-full mx-auto px-2 sm:px-8">
+            <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-6 sm:my-6">
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <div
+                            class="text-3xl md:text-4xl font-semibold tracking-tight leading-7 md:leading-10 truncate mb-3">
+                            <span>Mis cotizaciones</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center mt-6 sm:mt-0 sm:ml-2 space-x-3">
+                    <button mat-raised-button color="primary" class="bg-gray-600 w-full sm:w-auto" (click)="newQuote()">
+                        <mat-icon>add</mat-icon>
+                        <span class="ml-2">Nueva cotización</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-auto p-4 sm:pl-10 sm:pr-10 sm:pb-10 sm:pt-2 sm:items-center">
+        <div class="flex flex-wrap items-center w-full max-w-400">
+            <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
+                <table class="min-w-240 overflow-y-visible" mat-table [dataSource]="data.rows">
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>
+                            Nombre
+                        </th>
+                        <td mat-cell *matCellDef="let quote">
+                            <span class="flex items-center">
+                                <span class="ml-3 leading-4">{{quote.name}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef>
+                            Fecha
+                        </th>
+                        <td mat-cell *matCellDef="let quote">
+                            <span class="flex items-center">
+                                <span class="ml-3 leading-4">{{quote.date}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef>
+                            Monto
+                        </th>
+                        <td mat-cell *matCellDef="let quote">
+                            <span class="flex items-center">
+                                <span class="ml-3 leading-4">{{quote.amount || 'N/A'}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="options">
+                        <th mat-header-cell *matHeaderCellDef>
+                            #
+                        </th>
+                        <td mat-cell *matCellDef="let user">
+                            <button mat-icon-button color="primary"
+                                (click)="editUserRedirect(user.id)" aria-label="Ver">
+                                <mat-icon svgIcon="heroicons_mini:pencil-square"></mat-icon>
+                            </button>
+
+                            <button mat-icon-button color="warn" aria-label="Eliminar"
+                                (click)="deleteUser(user.id)">
+                                <mat-icon svgIcon="heroicons_mini:x-mark"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="data.columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: data.columns;"></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
