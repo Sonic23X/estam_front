@@ -1,12 +1,12 @@
 <div class="w-full max-w-3xl">
 
     <!-- Form -->
-    <form [formGroup]="accountForm">
+    <form [formGroup]="accountForm" #updateUserNgForm="ngForm">
 
         <!-- Section -->
         <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
             <!-- Name -->
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-2">
                 <mat-form-field
                     class="w-full"
                     [subscriptSizing]="'dynamic'">
@@ -20,8 +20,34 @@
                         matInput>
                 </mat-form-field>
             </div>
-        </div>
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <div class="sm:col-span-2">
+                <mat-form-field
+                    class="w-full"
+                    [subscriptSizing]="'dynamic'">
+                    <mat-label>Apellido paterno</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:user'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'last_name'"
+                        matInput>
+                </mat-form-field>
+            </div>
+            <div class="sm:col-span-2">
+                <mat-form-field
+                    class="w-full"
+                    [subscriptSizing]="'dynamic'">
+                    <mat-label>Apellido materno</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:user'"
+                        matPrefix></mat-icon>
+                    <input
+                        [formControlName]="'second_last_name'"
+                        matInput>
+                </mat-form-field>
+            </div>
             <!-- Email -->
             <div class="sm:col-span-2">
                 <mat-form-field
@@ -48,7 +74,7 @@
                         [svgIcon]="'heroicons_solid:phone'"
                         matPrefix></mat-icon>
                     <input
-                        [formControlName]="'phone'"
+                        [formControlName]="'telephone'"
                         matInput>
                 </mat-form-field>
             </div>
@@ -63,6 +89,7 @@
                 class="ml-4"
                 mat-flat-button
                 type="button"
+                (click)="submit()"
                 [color]="'primary'">Actualizar
             </button>
         </div>

@@ -59,6 +59,12 @@ export class SettingsComponent implements OnInit, OnDestroy
                 title      : 'Seguridad',
                 description: '',
             },
+            {
+                id         : 'team',
+                icon       : 'heroicons_outline:user-group',
+                title      : 'Equipo',
+                description: '',
+            }
         ];
 
         // Subscribe to media changes

@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { SettingsService } from 'app/modules/admin/settings/settings.service';
+
 
 @Component({
     selector       : 'settings-team',
@@ -18,12 +20,14 @@ import { MatSelectModule } from '@angular/material/select';
 export class SettingsTeamComponent implements OnInit
 {
     members: any[];
-    roles: any[];
 
     /**
      * Constructor
      */
-    constructor()
+    constructor(
+        private _settingsService: SettingsService,
+
+    )
     {
     }
 
@@ -36,8 +40,13 @@ export class SettingsTeamComponent implements OnInit
      */
     ngOnInit(): void
     {
+        // Subscribe to the settings
+        this._settingsService.getTeam().subscribe((team) => {
+            this.members = team.users;
+            console.log(this.members);
+        });
         // Setup the team members
-        this.members = [
+        /*this.members = [
             {
                 avatar: 'assets/images/avatars/male-01.jpg',
                 name  : 'Dejesus Michael',
@@ -80,40 +89,12 @@ export class SettingsTeamComponent implements OnInit
                 email : 'shannonkennedy@mail.ca',
                 role  : 'read',
             },
-        ];
+        ];*/
 
-        // Setup the roles
-        this.roles = [
-            {
-                label      : 'Read',
-                value      : 'read',
-                description: 'Can read and clone this repository. Can also open and comment on issues and pull requests.',
-            },
-            {
-                label      : 'Write',
-                value      : 'write',
-                description: 'Can read, clone, and push to this repository. Can also manage issues and pull requests.',
-            },
-            {
-                label      : 'Admin',
-                value      : 'admin',
-                description: 'Can read, clone, and push to this repository. Can also manage issues, pull requests, and repository settings, including adding collaborators.',
-            },
-        ];
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
-        return item.id || index;
-    }
 }

@@ -4,10 +4,8 @@ import { BehaviorSubject, Observable, tap, switchMap, of } from 'rxjs';
 import { environment } from "environments/environment";
 
 @Injectable({providedIn: 'root'})
-export class QuotesService
+export class SettingsService
 {
-    private _data: BehaviorSubject<any> = new BehaviorSubject(null);
-
     /**
      * Constructor
      */
@@ -19,30 +17,28 @@ export class QuotesService
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Getter for data
-     */
-    get data$(): Observable<any>
-    {
-        return this._data.asObservable();
-    }
-
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-    newQuote(data: any): Observable<any>
+
+    updateAccount(data: any, id: any): Observable<any>
     {
-        return this._httpClient.post<any>(`${environment.apiUrl}quotes`, data)
-            .pipe(
-                switchMap((response: any) => of(response)),
-            );
+        return this._httpClient.put(`${environment.apiUrl}users/${id}`, data);
     }
 
-    searchData(data: any): Observable<any>
+    changePassword(data: any, id: any): Observable<any>
     {
-        return this._httpClient.post<any>(`${environment.apiUrl}quotes/search`, data)
-            .pipe(
-                switchMap((response: any) => of(response)),
-            );
+        return this._httpClient.post(`${environment.apiUrl}users/${id}/password`, data);
     }
+
+    getTeam(): Observable<any>
+    {
+        return this._httpClient.get(`${environment.apiUrl}users`);
+    }
+
+    newTeamMember(data: any): Observable<any>
+    {
+        return this._httpClient.post(`${environment.apiUrl}users`, data);
+    }
+
 }

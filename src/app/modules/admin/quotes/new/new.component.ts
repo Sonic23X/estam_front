@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { HomeService } from 'app/modules/admin/home/home.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { QuotesService } from 'app/modules/admin/quotes/quotes.service';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -17,8 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
-
+import { set } from 'lodash';
 
 @Component({
     selector       : 'new-quote',
@@ -53,6 +53,8 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
     showAlert: boolean = false;
     showAllMonths: boolean = false;
 
+    serviceNumber: string = '';
+
     /**
      * Constructor
      */
@@ -60,7 +62,8 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
         private _homeService: HomeService,
         private _router: Router,
         private _formBuilder: UntypedFormBuilder,
-        private _fuseConfirmationService: FuseConfirmationService
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _quotesService: QuotesService
     )
     {
     }
@@ -95,37 +98,83 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
     createFormGroup(): UntypedFormGroup {
         const formGroupConfig = {};
 
-        formGroupConfig['clientName'] = ['asdasda', Validators.required];
-        formGroupConfig['clientUbication'] = ['asdasd', Validators.required];
-        formGroupConfig['noService'] = ['123123123123', Validators.required];
-        formGroupConfig['tariff'] = ['PDBT', Validators.required];
-        formGroupConfig['contractedPower'] = ['12314', Validators.required];
-        formGroupConfig['connectedPower'] = ['123123', Validators.required];
+        if (localStorage.getItem('newQuote') !== null) {
+            const newQuote = JSON.parse(localStorage.getItem('newQuote'));
 
-        for (let i = 1; i <= 12; i++) {
-            formGroupConfig[`monStart${i}`] = ['23/10/2022', Validators.required];
-            formGroupConfig[`monEnd${i}`] = ['23/11/2022', Validators.required];
-            formGroupConfig[`consumoBase${i}`] = ['123', Validators.required];
-            formGroupConfig[`consumoIntermedia${i}`] = ['123', Validators.required];
-            formGroupConfig[`consumoPunta${i}`] = ['123', Validators.required];
-            formGroupConfig[`demandaBase${i}`] = ['123', Validators.required];
-            formGroupConfig[`demandaIntermedia${i}`] = ['123', Validators.required];
-            formGroupConfig[`demandaPunta${i}`] = ['122', Validators.required];
-            formGroupConfig[`kwaniomovil${i}`] = ['123', Validators.required];
-            formGroupConfig[`kvrah${i}`] = ['123', Validators.required];
-            formGroupConfig[`potencia${i}`] = ['123', Validators.required];
-            formGroupConfig[`suministro${i}`] = ['123', Validators.required];
-            formGroupConfig[`distribucion${i}`] = ['123', Validators.required];
-            formGroupConfig[`transmision${i}`] = ['123', Validators.required];
-            formGroupConfig[`cenace${i}`] = ['12', Validators.required];
-            formGroupConfig[`genB${i}`] = ['123', Validators.required];
-            formGroupConfig[`genI${i}`] = ['123', Validators.required];
-            formGroupConfig[`genP${i}`] = ['123', Validators.required];
-            formGroupConfig[`capacidad${i}`] = ['123', Validators.required];
-            formGroupConfig[`sCnMEM${i}`] = ['123', Validators.required];
-            formGroupConfig[`factor${i}`] = ['123', Validators.required];
-            formGroupConfig[`bTension${i}`] = ['123', Validators.required];
-            formGroupConfig[`aPublico${i}`] = ['123', Validators.required];
+            for (const key in newQuote) {
+                if (newQuote.hasOwnProperty(key)) {
+                    formGroupConfig[key] = [newQuote[key], Validators.required];
+                }
+            }
+
+            if (newQuote['tariff'] === 'PDBT') {
+                this.showAllMonths = false;
+            } else {
+                this.showAllMonths = true;
+
+                for (let index = 1; index <= 12; index++) {
+
+                    formGroupConfig[`consumoBase${index}`] = ['', Validators.required];
+                    formGroupConfig[`consumoPunta${index}`] = ['', Validators.required];
+                    formGroupConfig[`demandaBase${index}`] = ['', Validators.required];
+                    formGroupConfig[`demandaIntermedia${index}`] = ['', Validators.required];
+                    formGroupConfig[`demandaPunta${index}`] = ['', Validators.required];
+                    formGroupConfig[`genB${index}`] = ['', Validators.required];
+                    formGroupConfig[`genP${index}`] = ['', Validators.required];
+                    formGroupConfig[`factor${index}`] = ['', Validators.required];
+                    formGroupConfig[`bTension${index}`] = ['', Validators.required];
+
+                    if (index > 6) {
+                        formGroupConfig[`monStart${index}`] = ['', Validators.required];
+                        formGroupConfig[`monEnd${index}`] = ['', Validators.required];
+                        formGroupConfig[`consumoIntermedia${index}`] = ['', Validators.required];
+                        formGroupConfig[`kwaniomovil${index}`] = ['', Validators.required];
+                        formGroupConfig[`kvrah${index}`] = ['', Validators.required];
+                        formGroupConfig[`potencia${index}`] = ['', Validators.required];
+                        formGroupConfig[`suministro${index}`] = ['', Validators.required];
+                        formGroupConfig[`distribucion${index}`] = ['', Validators.required];
+                        formGroupConfig[`transmision${index}`] = ['', Validators.required];
+                        formGroupConfig[`cenace${index}`] = ['', Validators.required];
+                        formGroupConfig[`genI${index}`] = ['', Validators.required];
+                        formGroupConfig[`capacidad${index}`] = ['', Validators.required];
+                        formGroupConfig[`sCnMEM${index}`] = ['', Validators.required];
+                        formGroupConfig[`aPublico${index}`] = ['', Validators.required];
+                    }
+                }
+            }
+        } else {
+            formGroupConfig['clientName'] = ['asdasda', Validators.required];
+            formGroupConfig['clientUbication'] = ['asdasd', Validators.required];
+            formGroupConfig['noService'] = ['123123123123', Validators.required];
+            formGroupConfig['tariff'] = ['PDBT', Validators.required];
+            formGroupConfig['contractedPower'] = ['12314', Validators.required];
+            formGroupConfig['connectedPower'] = ['123123', Validators.required];
+
+            for (let i = 1; i <= 12; i++) {
+                formGroupConfig[`monStart${i}`] = [new Date(), Validators.required];
+                formGroupConfig[`monEnd${i}`] = [new Date(), Validators.required];
+                formGroupConfig[`consumoBase${i}`] = ['123', Validators.required];
+                formGroupConfig[`consumoIntermedia${i}`] = ['123', Validators.required];
+                formGroupConfig[`consumoPunta${i}`] = ['123', Validators.required];
+                formGroupConfig[`demandaBase${i}`] = ['123', Validators.required];
+                formGroupConfig[`demandaIntermedia${i}`] = ['123', Validators.required];
+                formGroupConfig[`demandaPunta${i}`] = ['122', Validators.required];
+                formGroupConfig[`kwaniomovil${i}`] = ['123', Validators.required];
+                formGroupConfig[`kvrah${i}`] = ['123', Validators.required];
+                formGroupConfig[`potencia${i}`] = ['123', Validators.required];
+                formGroupConfig[`suministro${i}`] = ['123', Validators.required];
+                formGroupConfig[`distribucion${i}`] = ['123', Validators.required];
+                formGroupConfig[`transmision${i}`] = ['123', Validators.required];
+                formGroupConfig[`cenace${i}`] = ['12', Validators.required];
+                formGroupConfig[`genB${i}`] = ['123', Validators.required];
+                formGroupConfig[`genI${i}`] = ['123', Validators.required];
+                formGroupConfig[`genP${i}`] = ['123', Validators.required];
+                formGroupConfig[`capacidad${i}`] = ['123', Validators.required];
+                formGroupConfig[`sCnMEM${i}`] = ['123', Validators.required];
+                formGroupConfig[`factor${i}`] = ['123', Validators.required];
+                formGroupConfig[`bTension${i}`] = ['123', Validators.required];
+                formGroupConfig[`aPublico${i}`] = ['123', Validators.required];
+            }
         }
 
         return this._formBuilder.group(formGroupConfig);
@@ -206,15 +255,65 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
         if ( this.newQuoteForm.invalid )
         {
             console.log(this.newQuoteForm);
+            this._fuseConfirmationService.open({
+                title: 'Error',
+                message: 'Revisa que todos los campos estén llenos correctamente.',
+                actions: {
+                    confirm: {
+                        label: 'Entendido'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
             return;
         }
 
         this.newQuoteForm.disable();
 
-        console.log('asd');
+        localStorage.setItem('newQuote', JSON.stringify(this.newQuoteForm.value));
 
+        // send to backend
+        this._quotesService.newQuote(this.newQuoteForm.value).subscribe((response) => {
+            console.log(response);
+            //this._router.navigate(['/quotes/preview']);
+        });
 
+        this._fuseConfirmationService.open({
+            title: 'Error',
+            message: 'La cotización ha tenido un error, intente más tarde.',
+            actions: {
+                confirm: {
+                    label: 'Entendido'
+                },
+                cancel: {
+                    show: false
+                }
+            }
+        });
 
         //this._router.navigate(['/quotes/preview']);
+    }
+
+    searchData(): void {
+        this._quotesService.searchData(this.serviceNumber).subscribe((response) => {
+            console.log(response);
+        }, (error) => {
+            setTimeout(() => {
+                this._fuseConfirmationService.open({
+                    title: 'Error',
+                    message: 'No se encontró el número de servicio.',
+                    actions: {
+                        confirm: {
+                            label: 'Entendido'
+                        },
+                        cancel: {
+                            show: false
+                        }
+                    }
+                });
+            }, 4000);
+        });
     }
 }

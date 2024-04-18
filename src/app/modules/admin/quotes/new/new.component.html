@@ -35,6 +35,7 @@
                             <div class="flex w-1/2">
                                 <mat-form-field class="flex-auto">
                                     <input
+                                    [(ngModel)]="serviceNumber"
                                         required
                                         matInput>
                                 </mat-form-field>
@@ -45,6 +46,7 @@
                         <button
                             class="px-6 ml-3"
                             mat-flat-button
+                            (click)="searchData()"
                             [color]="'primary'">
                             Cotizar
                         </button>
