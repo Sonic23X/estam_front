@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, CurrencyPipe } from '@angular/common';
 import { Component, ViewEncapsulation, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,19 +24,21 @@ import { FuseCardComponent } from '@fuse/components/card';
         FuseCardComponent,
         NgClass,
         NgFor,
-        NgIf
+        NgIf,
+        CurrencyPipe
     ],
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit
 {
-
+    isLoading: boolean = false;
     data: any = {
         columns: [
             'name',
             'date',
             'amount',
             'options'
-        ]
+        ],
+        rows : []
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -60,6 +62,20 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit
      */
     ngOnInit(): void
     {
+        this._homeService.getMyQuotes().subscribe((response) => {
+            response.quotes.forEach((quote) => {
+                let annual = JSON.parse(quote.annualConsumption);
+
+                let data = {
+                    name: quote.name,
+                    date: new Date(quote.created_at).toLocaleDateString(),
+                    amount: annual.total,
+                }
+
+                this.data.rows.push(data);
+            });
+            this.isLoading = true;
+        });
     }
 
     /**

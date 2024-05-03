@@ -45,4 +45,14 @@ export class QuotesService
                 switchMap((response: any) => of(response)),
             );
     }
+
+    getQuotes(): Observable<any>
+    {
+        return this._httpClient.get<any>(`${environment.apiUrl}quotes`);
+    }
+
+    getQuote(id: string): Observable<any>
+    {
+        return this._httpClient.get<any>(`${environment.apiUrl}quotes/${id}`);
+    }
 }

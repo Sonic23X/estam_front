@@ -2,25 +2,31 @@
 
     <!-- Add team member -->
     <div class="w-full">
-        <mat-form-field
-            class="w-full"
-            [subscriptSizing]="'dynamic'">
-            <mat-label>Add team members</mat-label>
-            <mat-icon
-                class="icon-size-5"
-                [svgIcon]="'heroicons_solid:user'"
-                matPrefix></mat-icon>
-            <input
-                matInput
-                [placeholder]="'Email address'">
-            <button
-                mat-icon-button
-                matSuffix>
+        <form>
+            <mat-form-field
+                class="w-full"
+                [subscriptSizing]="'dynamic'">
+                <mat-label>Agregar nuevo miembro</mat-label>
                 <mat-icon
                     class="icon-size-5"
-                    [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
-            </button>
-        </mat-form-field>
+                    [svgIcon]="'heroicons_solid:user'"
+                    matPrefix></mat-icon>
+                <input
+                    matInput
+                    type="email"
+                    name="newMemberEmail"
+                    [(ngModel)]="newMemberEmail"
+                    [placeholder]="'Correo'">
+                <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="newTeamMember()">
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
     </div>
 
     <!-- Team members -->

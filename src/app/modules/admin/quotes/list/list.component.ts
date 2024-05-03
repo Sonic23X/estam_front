@@ -1,5 +1,5 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, ViewEncapsulation, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { NgClass, NgFor, NgIf, CurrencyPipe } from '@angular/common';
+import { Component, ViewEncapsulation, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -10,6 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseCardComponent } from '@fuse/components/card';
+import { QuotesService } from '../quotes.service';
 
 @Component({
     selector       : 'list-quote',
@@ -22,6 +23,7 @@ import { FuseCardComponent } from '@fuse/components/card';
         MatIconModule,
         MatButtonModule,
         FuseCardComponent,
+        CurrencyPipe,
         NgClass,
         NgFor,
         NgIf
@@ -29,7 +31,7 @@ import { FuseCardComponent } from '@fuse/components/card';
 })
 export class ListComponent implements OnInit, OnDestroy, AfterViewInit
 {
-
+    isLoading: boolean = false;
     data: any = {
         columns: [
             'name',
@@ -37,7 +39,8 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit
             'autor',
             'amount',
             'options'
-        ]
+        ],
+        rows : []
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -45,7 +48,7 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit
      * Constructor
      */
     constructor(
-        private _homeService: HomeService,
+        private _quoteService: QuotesService,
         private _router: Router,
         private _fuseConfirmationService: FuseConfirmationService
     )
@@ -61,6 +64,21 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit
      */
     ngOnInit(): void
     {
+        this._quoteService.getQuotes().subscribe((response) => {
+            response.quotes.forEach((quote) => {
+                let annual = JSON.parse(quote.annualConsumption);
+
+                let data = {
+                    name: quote.name,
+                    date: new Date(quote.created_at).toLocaleDateString(),
+                    amount: annual.total,
+                    autor: quote.user.name,
+                }
+
+                this.data.rows.push(data);
+            });
+            this.isLoading = true;
+        });
     }
 
     /**
@@ -83,5 +101,10 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit
     newQuote(): void
     {
         this._router.navigate(['quotes/new']);
+    }
+
+    seeQuote(id: Number): void
+    {
+        this._router.navigate(['/quotes/preview', id]);
     }
 }

@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6" *ngIf="isLoaded">
         <div class="w-full max-w-screen-xl mx-auto">
             <!-- Tabs -->
             <mat-tab-group
@@ -65,7 +65,7 @@
                                                 mat-cell
                                                 *matCellDef="let budget">
                                                 <span class="font-medium text-right">
-                                                    {{budget.total | currency:'USD'}}
+                                                    {{budget.subtotal | currency:'USD'}}
                                                 </span>
                                             </td>
                                         </ng-container>

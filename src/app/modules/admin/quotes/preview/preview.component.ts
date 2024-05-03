@@ -1,12 +1,12 @@
 import { NgClass, NgFor, NgIf, CurrencyPipe } from '@angular/common';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule  } from '@angular/forms';
-import { Component, ViewEncapsulation, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
-import { HomeService } from 'app/modules/admin/home/home.service';
+import { QuotesService } from 'app/modules/admin/quotes/quotes.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -17,29 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-
-import {
-    ApexAxisChartSeries,
-    ApexChart,
-    ChartComponent,
-    ApexDataLabels,
-    ApexPlotOptions,
-    ApexYAxis,
-    ApexTitleSubtitle,
-    ApexXAxis,
-    ApexFill
-} from "ng-apexcharts";
-
-export type ChartOptions = {
-    series: ApexAxisChartSeries;
-    chart: ApexChart;
-    dataLabels: ApexDataLabels;
-    plotOptions: ApexPlotOptions;
-    yaxis: ApexYAxis;
-    xaxis: ApexXAxis;
-    fill: ApexFill;
-    title: ApexTitleSubtitle;
-};
+import { forEach } from 'lodash';
 
 @Component({
     selector       : 'preview-quote',
@@ -68,11 +46,8 @@ export type ChartOptions = {
     ],
 })
 
-export class ResumeComponent implements OnInit, OnDestroy, AfterViewInit
+export class ResumeComponent implements OnInit
 {
-
-    @ViewChild("chart") chart: ChartComponent;
-    public chartOptions: Partial<ChartOptions>;
 
     data: any = {
         columns: [
@@ -81,199 +56,21 @@ export class ResumeComponent implements OnInit, OnDestroy, AfterViewInit
             'iva',
             'total'
         ],
-        rows: [
-            {
-                month: 'Enero',
-                subtotal: 100,
-                iva: 21,
-                total: 121
-            },
-            {
-                month: 'Febrero',
-                subtotal: 200,
-                iva: 42,
-                total: 242
-            },
-            {
-                month: 'Marzo',
-                subtotal: 300,
-                iva: 63,
-                total: 363
-            },
-            {
-                month: 'Abril',
-                subtotal: 400,
-                iva: 84,
-                total: 484
-            },
-            {
-                month: 'Mayo',
-                subtotal: 500,
-                iva: 105,
-                total: 605
-            },
-            {
-                month: 'Junio',
-                subtotal: 600,
-                iva: 126,
-                total: 726
-            },
-            {
-                month: 'Julio',
-                subtotal: 700,
-                iva: 147,
-                total: 847
-            },
-            {
-                month: 'Agosto',
-                subtotal: 800,
-                iva: 168,
-                total: 968
-            },
-            {
-                month: 'Septiembre',
-                subtotal: 900,
-                iva: 189,
-                total: 1089
-            },
-            {
-                month: 'Octubre',
-                subtotal: 1000,
-                iva: 210,
-                total: 1210
-            },
-            {
-                month: 'Noviembre',
-                subtotal: 1100,
-                iva: 231,
-                total: 1331
-            },
-            {
-                month: 'Diciembre',
-                subtotal: 1200,
-                iva: 252,
-                total: 1452
-            }
-        ]
+        rows: [ ]
     };
+    isLoaded: boolean = false;
 
 
     /**
      * Constructor
      */
     constructor(
-        private _homeService: HomeService,
+        private _quotesService: QuotesService,
         private _router: Router,
         private _fuseConfirmationService: FuseConfirmationService
     )
     {
-        this.chartOptions = {
-            series: [
-              {
-                name: "Inflation",
-                data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
-              }
-            ],
-            chart: {
-              height: 350,
-              type: "bar"
-            },
-            plotOptions: {
-              bar: {
-                dataLabels: {
-                  position: "top" // top, center, bottom
-                }
-              }
-            },
-            dataLabels: {
-              enabled: true,
-              formatter: function(val) {
-                return val + "%";
-              },
-              offsetY: -20,
-              style: {
-                fontSize: "12px",
-                colors: ["#304758"]
-              }
-            },
 
-            xaxis: {
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
-              ],
-              position: "top",
-              labels: {
-                offsetY: -18
-              },
-              axisBorder: {
-                show: false
-              },
-              axisTicks: {
-                show: false
-              },
-              crosshairs: {
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    colorFrom: "#D8E3F0",
-                    colorTo: "#BED1E6",
-                    stops: [0, 100],
-                    opacityFrom: 0.4,
-                    opacityTo: 0.5
-                  }
-                }
-              },
-              tooltip: {
-                enabled: true,
-                offsetY: -35
-              }
-            },
-            fill: {
-              type: "gradient",
-              gradient: {
-                shade: "light",
-                type: "horizontal",
-                shadeIntensity: 0.25,
-                gradientToColors: undefined,
-                inverseColors: true,
-                opacityFrom: 1,
-                opacityTo: 1,
-              }
-            },
-            yaxis: {
-              axisBorder: {
-                show: false
-              },
-              axisTicks: {
-                show: false
-              },
-              labels: {
-                show: false,
-                formatter: function(val) {
-                  return val + "%";
-                }
-              }
-            },
-            title: {
-              text: "Monthly Inflation in Argentina, 2002",
-              offsetY: 320,
-              align: "center",
-              style: {
-                color: "#444"
-              }
-            }
-          };
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -285,21 +82,125 @@ export class ResumeComponent implements OnInit, OnDestroy, AfterViewInit
      */
     ngOnInit(): void
     {
-    }
+        const quoteId = localStorage.getItem('idQuote');
+        if (quoteId) {
+            this._quotesService.getQuote(quoteId).subscribe((response) => {
+                let monthlyConsumption = JSON.parse(response.quote.monthlyConsumption);
+                console.log(monthlyConsumption);
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
+                let i = 0;
+                forEach(monthlyConsumption, (value) => {
+                    let data ={ };
 
-    }
+                    let section = this.getKey(i, response.quote.tariff);
+                    console.log(section);
 
-    ngAfterViewInit(): void {
+                    if (response.quote.tariff == 'PDBT') {
+                        data = {
+                            month: this.getMonth(i) + ' - ' + this.getMonth(++i),
+                            subtotal: monthlyConsumption[section].subtotal,
+                            iva: monthlyConsumption[section].iva,
+                            total: monthlyConsumption[section].total
+                        }
+                    } else {
+                        data = {
+                            month: this.getMonth(i),
+                            subtotal: monthlyConsumption[section].subtotal,
+                            iva: monthlyConsumption[section].iva,
+                            total: monthlyConsumption[section].total
+                        }
+                    }
+
+                    this.data.rows.push(data);
+                    i++;
+                });
+                this.isLoaded = true;
+            });
+        } else {
+            this._router.navigate(['/quotes']);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    getMonth(n: Number): string
+    {
+        switch (n) {
+            case 0:
+                return 'Enero';
+            case 1:
+                return 'Febrero';
+            case 2:
+                return 'Marzo';
+            case 3:
+                return 'Abril';
+            case 4:
+                return 'Mayo';
+            case 5:
+                return 'Junio';
+            case 6:
+                return 'Julio';
+            case 7:
+                return 'Agosto';
+            case 8:
+                return 'Septiembre';
+            case 9:
+                return 'Octubre';
+            case 10:
+                return 'Noviembre';
+            case 11:
+                return 'Diciembre';
+            default:
+                return '';
+        }
+    }
+
+    getKey(n: Number, type: string): string
+    {
+        switch (n) {
+            case 0:
+                return 'primero';
+            case 1:
+                return 'segundo';
+            case 2:
+                if (type == 'PDBT') {
+                    return 'segundo';
+                }
+                return 'tercero';
+            case 3:
+                return 'cuarto';
+            case 4:
+                if (type == 'PDBT') {
+                    return 'tercero';
+                }
+                return 'quinto';
+            case 5:
+                return 'sexto';
+            case 6:
+                if (type == 'PDBT') {
+                    return 'cuarto';
+                }
+                return 'septimo';
+            case 7:
+                return 'octavo';
+            case 8:
+                if (type == 'PDBT') {
+                    return 'quinto';
+                }
+                return 'noveno';
+            case 9:
+                return 'decimo';
+            case 10:
+                if (type == 'PDBT') {
+                    return 'sexto';
+                }
+                return 'onceavo';
+            case 11:
+                return 'doceavo';
+        }
+    }
 }

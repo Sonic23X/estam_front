@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SettingsService } from 'app/modules/admin/settings/settings.service';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 
 @Component({
@@ -15,18 +17,19 @@ import { SettingsService } from 'app/modules/admin/settings/settings.service';
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone     : true,
-    imports        : [MatFormFieldModule, MatIconModule, MatInputModule, MatButtonModule, NgFor, NgIf, MatSelectModule, MatOptionModule, TitleCasePipe],
+    imports        : [MatFormFieldModule, MatIconModule, MatInputModule, MatButtonModule, NgFor, NgIf, MatSelectModule, MatOptionModule, TitleCasePipe, FormsModule, ReactiveFormsModule],
 })
 export class SettingsTeamComponent implements OnInit
 {
     members: any[];
+    newMemberEmail: string;
 
     /**
      * Constructor
      */
     constructor(
         private _settingsService: SettingsService,
-
+        private _fuseConfirmationService: FuseConfirmationService,
     )
     {
     }
@@ -43,58 +46,70 @@ export class SettingsTeamComponent implements OnInit
         // Subscribe to the settings
         this._settingsService.getTeam().subscribe((team) => {
             this.members = team.users;
-            console.log(this.members);
         });
         // Setup the team members
-        /*this.members = [
-            {
-                avatar: 'assets/images/avatars/male-01.jpg',
-                name  : 'Dejesus Michael',
-                email : 'dejesusmichael@mail.org',
-                role  : 'admin',
-            },
-            {
-                avatar: 'assets/images/avatars/male-03.jpg',
-                name  : 'Mclaughlin Steele',
-                email : 'mclaughlinsteele@mail.me',
-                role  : 'admin',
-            },
-            {
-                avatar: 'assets/images/avatars/female-02.jpg',
-                name  : 'Laverne Dodson',
-                email : 'lavernedodson@mail.ca',
-                role  : 'write',
-            },
-            {
-                avatar: 'assets/images/avatars/female-03.jpg',
-                name  : 'Trudy Berg',
-                email : 'trudyberg@mail.us',
-                role  : 'read',
-            },
-            {
-                avatar: 'assets/images/avatars/male-07.jpg',
-                name  : 'Lamb Underwood',
-                email : 'lambunderwood@mail.me',
-                role  : 'read',
-            },
-            {
-                avatar: 'assets/images/avatars/male-08.jpg',
-                name  : 'Mcleod Wagner',
-                email : 'mcleodwagner@mail.biz',
-                role  : 'read',
-            },
-            {
-                avatar: 'assets/images/avatars/female-07.jpg',
-                name  : 'Shannon Kennedy',
-                email : 'shannonkennedy@mail.ca',
-                role  : 'read',
-            },
-        ];*/
-
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+    newTeamMember(): void
+    {
+        var patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!patron.test(this.newMemberEmail)) {
+            this._fuseConfirmationService.open({
+                title: 'Error',
+                message: 'El email ingresado no es válido. Por favor, intenta de nuevo.',
+                actions: {
+                    confirm: {
+                        label: 'Entendido'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
+            return;
+        }
 
+        this._settingsService.newTeamMember({email: this.newMemberEmail}).subscribe(() => {
+            this._fuseConfirmationService.open({
+                title: 'Hecho',
+                message: 'Miembro agregado correctamente.',
+                icon: {
+                    show: true,
+                    name: 'check',
+                    color: 'success'
+                },
+                actions: {
+                    confirm: {
+                        label: 'Entendido',
+                        color: 'primary'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
+            this.members.push({
+                avatar: 'assets/images/avatars/profile.jpg',
+                name  : this.newMemberEmail,
+                email : this.newMemberEmail,
+            });
+        }, () => {
+            this._fuseConfirmationService.open({
+                title: 'Error',
+                message: 'Ha ocurrido un error, por favor intenta de nuevo.',
+                actions: {
+                    confirm: {
+                        label: 'Entendido'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
+        });
+
+    }
 }

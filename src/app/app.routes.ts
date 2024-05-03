@@ -72,7 +72,7 @@ export const appRoutes: Route[] = [
             {path: 'home', loadChildren: () => import('app/modules/admin/home/home.routes')},
             {path: 'quotes', loadChildren: () => import('app/modules/admin/quotes/list/list.routes')},
             {path: 'quotes/new', loadChildren: () => import('app/modules/admin/quotes/new/new.routes')},
-            {path: 'quotes/preview', loadChildren: () => import('app/modules/admin/quotes/preview/preview.routes')},
+            {path: 'quotes/preview/:id', loadChildren: () => import('app/modules/admin/quotes/preview/preview.routes')},
             {path: 'settings', loadChildren: () => import('app/modules/admin/settings/settings.routes')},
         ]
     }

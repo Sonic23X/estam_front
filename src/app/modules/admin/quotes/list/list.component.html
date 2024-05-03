@@ -26,7 +26,7 @@
     <div class="flex-auto p-4 sm:pl-10 sm:pr-10 sm:pb-10 sm:pt-2 sm:items-center">
         <div class="flex flex-wrap items-center w-full max-w-400">
             <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
-                <table class="min-w-240 overflow-y-visible" mat-table [dataSource]="data.rows">
+                <table class="min-w-240 overflow-y-visible" mat-table [dataSource]="data.rows" *ngIf="isLoading">
 
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef>
@@ -67,7 +67,7 @@
                         </th>
                         <td mat-cell *matCellDef="let quote">
                             <span class="flex items-center">
-                                <span class="ml-3 leading-4">{{quote.amount || 'N/A'}}</span>
+                                <span class="ml-3 leading-4">{{quote.amount || '0' | currency: "MXN" : "symbol"}}</span>
                             </span>
                         </td>
                     </ng-container>
@@ -76,14 +76,14 @@
                         <th mat-header-cell *matHeaderCellDef>
                             #
                         </th>
-                        <td mat-cell *matCellDef="let user">
+                        <td mat-cell *matCellDef="let quote">
                             <button mat-icon-button color="primary"
-                                (click)="editUserRedirect(user.id)" aria-label="Ver">
-                                <mat-icon svgIcon="heroicons_mini:pencil-square"></mat-icon>
+                                (click)="seeQuote(quote.id)" aria-label="Ver">
+                                <mat-icon svgIcon="heroicons_outline:eye"></mat-icon>
                             </button>
 
                             <button mat-icon-button color="warn" aria-label="Eliminar"
-                                (click)="deleteUser(user.id)">
+                                (click)="deleteUser(quote.id)">
                                 <mat-icon svgIcon="heroicons_mini:x-mark"></mat-icon>
                             </button>
                         </td>

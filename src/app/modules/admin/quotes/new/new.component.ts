@@ -274,26 +274,10 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
 
         localStorage.setItem('newQuote', JSON.stringify(this.newQuoteForm.value));
 
-        // send to backend
         this._quotesService.newQuote(this.newQuoteForm.value).subscribe((response) => {
-            console.log(response);
-            //this._router.navigate(['/quotes/preview']);
+            localStorage.setItem('idQuote', response.quote.id);
+            this._router.navigate(['/quotes/preview', response.quote.id]);
         });
-
-        this._fuseConfirmationService.open({
-            title: 'Error',
-            message: 'La cotización ha tenido un error, intente más tarde.',
-            actions: {
-                confirm: {
-                    label: 'Entendido'
-                },
-                cancel: {
-                    show: false
-                }
-            }
-        });
-
-        //this._router.navigate(['/quotes/preview']);
     }
 
     searchData(): void {
