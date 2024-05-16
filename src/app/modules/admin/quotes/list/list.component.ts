@@ -69,6 +69,7 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit
                 let annual = JSON.parse(quote.annualConsumption);
 
                 let data = {
+                    id: quote.id,
                     name: quote.name,
                     date: new Date(quote.created_at).toLocaleDateString(),
                     amount: annual.total,

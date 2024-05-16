@@ -23,7 +23,6 @@
                 class="sm:px-2"
                 mat-stretch-tabs="false"
                 [animationDuration]="'0'">
-
                 <!-- Home -->
                 <mat-tab label="Detalles">
                     <ng-template matTabContent>
@@ -112,7 +111,232 @@
                             <div class="sm:col-span-6 flex flex-col flex-auto p-6 overflow-hidden">
                                 <div class="text-lg font-medium tracking-tight leading-6 truncate">Total anual</div>
                                 <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
-
+                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 rounded-s-lg">
+                                                    Concepto
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Monto
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Consumo BASE (kWh)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.consumoBase | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Consumo INTERMEDIA (kWh)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.consumoIntermedio | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Consumo PUNTA (kWh)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.consumoPunta | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    kWAño Movil
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.kWanio | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    kVrah
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.kVrah | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Factor de Potencia Anual
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.factorPotencia }}
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Demanda BASE (kW)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.demandaBase | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Demanda INTERMEDIA (kW)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.demandaIntermedia | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Demanda PUNTA (kW)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.demandaPunta | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Suministro ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroSuministro | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Distribución ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroDistribucion | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Transmisión ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroTransmision | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro CENACE ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroCenace | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Generación B ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.genB | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Generación I ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.genI | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Generación P ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.genP | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro Capacidad ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroCapacidad | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Cobro SCnMEM ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.cobroSCnMEM | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Bonificación(+)/Cargo(-) por factor de Potencia ($)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.cobroform | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Otros cargos (2% baja tensión)
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <span *ngIf="quote != null && quote.tariff != 'PDBT'; else noA">
+                                                        {{ dataYear.cobroTension | currency:'USD' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Subtotal
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.subtotal | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    IVA
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.iva | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Alumbrado público
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.alumbrado | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    Total
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    {{ dataYear.total | currency:'USD' }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -121,11 +345,52 @@
 
                 <mat-tab label="Graficas">
                     <ng-template matTabContent>
-
+                        <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 overflow-hidden">
+                            <div class="flex flex-col sm:flex-row items-start justify-between">
+                                <div class="text-lg font-medium tracking-tight leading-6 truncate">Consumo historico ($)</div>
+                            </div>
+                            <div class="flex flex-col flex-auto mt-6">
+                                <apx-chart
+                                    class="flex-auto w-full h-80"
+                                    [series]="basicChar.series"
+                                    [chart]="basicChar.chart"
+                                    [dataLabels]="basicChar.dataLabels"
+                                    [plotOptions]="basicChar.plotOptions"
+                                    [yaxis]="basicChar.yaxis"
+                                    [xaxis]="basicChar.xaxis"
+                                    [fill]="basicChar.fill"
+                                    [title]="basicChar.title"></apx-chart>
+                            </div>
+                            <div class="flex flex-col flex-auto mt-6" *ngIf="quote.tariff != 'PDBT'">
+                                <apx-chart
+                                    class="flex-auto w-full h-80"
+                                    [series]="baseChar.series"
+                                    [chart]="baseChar.chart"
+                                    [dataLabels]="baseChar.dataLabels"
+                                    [plotOptions]="baseChar.plotOptions"
+                                    [yaxis]="baseChar.yaxis"
+                                    [xaxis]="baseChar.xaxis"
+                                    [fill]="baseChar.fill"
+                                    [title]="baseChar.title"></apx-chart>
+                            </div>
+                            <div class="flex flex-col flex-auto mt-6" *ngIf="quote.tariff != 'PDBT'">
+                                <apx-chart
+                                    class="flex-auto w-full h-80"
+                                    [series]="puntaChar.series"
+                                    [chart]="puntaChar.chart"
+                                    [dataLabels]="puntaChar.dataLabels"
+                                    [plotOptions]="puntaChar.plotOptions"
+                                    [yaxis]="puntaChar.yaxis"
+                                    [xaxis]="puntaChar.xaxis"
+                                    [fill]="puntaChar.fill"
+                                    [title]="puntaChar.title"></apx-chart>
+                            </div>
+                        </div>
                     </ng-template>
                 </mat-tab>
-
             </mat-tab-group>
         </div>
     </div>
 </div>
+
+<ng-template #noA>N/A</ng-template>
