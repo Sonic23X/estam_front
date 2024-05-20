@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgIf, CurrencyPipe } from '@angular/common';
-import { UntypedFormBuilder, UntypedFormGroup, FormsModule  } from '@angular/forms';
+import { FormsModule  } from '@angular/forms';
 import { Component, ViewEncapsulation, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { QuotesService } from 'app/modules/admin/quotes/quotes.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { ActivatedRoute } from '@angular/router';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -107,7 +108,8 @@ export class ResumeComponent implements OnInit
     constructor(
         private _quotesService: QuotesService,
         private _router: Router,
-        private _fuseConfirmationService: FuseConfirmationService
+        private _fuseConfirmationService: FuseConfirmationService,
+        private _route: ActivatedRoute
     )
     {
 
@@ -122,8 +124,8 @@ export class ResumeComponent implements OnInit
      */
     ngOnInit(): void
     {
-        const quoteId = localStorage.getItem('idQuote');
-        if (quoteId) {
+        const quoteId = this._route.snapshot.paramMap.get('id');
+        if (quoteId != null && quoteId != undefined) {
             this._quotesService.getQuote(quoteId).subscribe((response) => {
                 let monthlyConsumption = JSON.parse(response.quote.monthlyConsumption);
                 this.quote = response.quote;
@@ -190,6 +192,15 @@ export class ResumeComponent implements OnInit
                 this.isLoaded = true;
             });
         } else {
+            this._fuseConfirmationService.open({
+                title: 'Advertencia',
+                message: 'No se encontro la cotización solicitada.',
+                actions: {
+                    confirm: {
+                        label: 'Aceptar'
+                    }
+                }
+            })
             this._router.navigate(['/quotes']);
         }
     }

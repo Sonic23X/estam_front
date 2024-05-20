@@ -27,7 +27,6 @@
         <div class="flex flex-wrap items-center w-full max-w-400">
             <div class="flex flex-col flex-auto mt-2 overflow-x-auto">
                 <table class="min-w-240 overflow-y-visible" mat-table [dataSource]="data.rows" *ngIf="isLoading">
-
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef>
                             Nombre
@@ -80,11 +79,6 @@
                             <button mat-icon-button color="primary"
                                 (click)="seeQuote(quote.id)" aria-label="Ver">
                                 <mat-icon svgIcon="heroicons_outline:eye"></mat-icon>
-                            </button>
-
-                            <button mat-icon-button color="warn" aria-label="Eliminar"
-                                (click)="deleteUser(quote.id)">
-                                <mat-icon svgIcon="heroicons_mini:x-mark"></mat-icon>
                             </button>
                         </td>
                     </ng-container>

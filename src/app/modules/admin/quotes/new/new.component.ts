@@ -18,7 +18,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { set } from 'lodash';
 
 @Component({
     selector       : 'new-quote',
@@ -51,7 +50,7 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
     @ViewChild('newQuote') newQuoteNgForm: NgForm;
     newQuoteForm: UntypedFormGroup;
     showAlert: boolean = false;
-    showAllMonths: boolean = false;
+    showAllMonths: boolean = true;
 
     serviceNumber: string = '';
 
@@ -143,37 +142,37 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
                 }
             }
         } else {
-            formGroupConfig['clientName'] = ['asdasda', Validators.required];
-            formGroupConfig['clientUbication'] = ['asdasd', Validators.required];
-            formGroupConfig['noService'] = ['123123123123', Validators.required];
-            formGroupConfig['tariff'] = ['PDBT', Validators.required];
-            formGroupConfig['contractedPower'] = ['12314', Validators.required];
-            formGroupConfig['connectedPower'] = ['123123', Validators.required];
+            formGroupConfig['clientName'] = ['', Validators.required];
+            formGroupConfig['clientUbication'] = ['', Validators.required];
+            formGroupConfig['noService'] = ['', Validators.required];
+            formGroupConfig['tariff'] = ['', Validators.required];
+            formGroupConfig['contractedPower'] = ['', Validators.required];
+            formGroupConfig['connectedPower'] = ['', Validators.required];
 
             for (let i = 1; i <= 12; i++) {
-                formGroupConfig[`monStart${i}`] = [new Date(), Validators.required];
-                formGroupConfig[`monEnd${i}`] = [new Date(), Validators.required];
-                formGroupConfig[`consumoBase${i}`] = ['123', Validators.required];
-                formGroupConfig[`consumoIntermedia${i}`] = ['123', Validators.required];
-                formGroupConfig[`consumoPunta${i}`] = ['123', Validators.required];
-                formGroupConfig[`demandaBase${i}`] = ['123', Validators.required];
-                formGroupConfig[`demandaIntermedia${i}`] = ['123', Validators.required];
-                formGroupConfig[`demandaPunta${i}`] = ['122', Validators.required];
-                formGroupConfig[`kwaniomovil${i}`] = ['123', Validators.required];
-                formGroupConfig[`kvrah${i}`] = ['123', Validators.required];
-                formGroupConfig[`potencia${i}`] = ['123', Validators.required];
-                formGroupConfig[`suministro${i}`] = ['123', Validators.required];
-                formGroupConfig[`distribucion${i}`] = ['123', Validators.required];
-                formGroupConfig[`transmision${i}`] = ['123', Validators.required];
-                formGroupConfig[`cenace${i}`] = ['12', Validators.required];
-                formGroupConfig[`genB${i}`] = ['123', Validators.required];
-                formGroupConfig[`genI${i}`] = ['123', Validators.required];
-                formGroupConfig[`genP${i}`] = ['123', Validators.required];
-                formGroupConfig[`capacidad${i}`] = ['123', Validators.required];
-                formGroupConfig[`sCnMEM${i}`] = ['123', Validators.required];
-                formGroupConfig[`factor${i}`] = ['123', Validators.required];
-                formGroupConfig[`bTension${i}`] = ['123', Validators.required];
-                formGroupConfig[`aPublico${i}`] = ['123', Validators.required];
+                formGroupConfig[`monStart${i}`] = ['', Validators.required];
+                formGroupConfig[`monEnd${i}`] = ['', Validators.required];
+                formGroupConfig[`consumoBase${i}`] = ['', Validators.required];
+                formGroupConfig[`consumoIntermedia${i}`] = ['', Validators.required];
+                formGroupConfig[`consumoPunta${i}`] = ['', Validators.required];
+                formGroupConfig[`demandaBase${i}`] = ['', Validators.required];
+                formGroupConfig[`demandaIntermedia${i}`] = ['', Validators.required];
+                formGroupConfig[`demandaPunta${i}`] = ['', Validators.required];
+                formGroupConfig[`kwaniomovil${i}`] = ['', Validators.required];
+                formGroupConfig[`kvrah${i}`] = ['', Validators.required];
+                formGroupConfig[`potencia${i}`] = ['', Validators.required];
+                formGroupConfig[`suministro${i}`] = ['', Validators.required];
+                formGroupConfig[`distribucion${i}`] = ['', Validators.required];
+                formGroupConfig[`transmision${i}`] = ['', Validators.required];
+                formGroupConfig[`cenace${i}`] = ['', Validators.required];
+                formGroupConfig[`genB${i}`] = ['', Validators.required];
+                formGroupConfig[`genI${i}`] = ['', Validators.required];
+                formGroupConfig[`genP${i}`] = ['', Validators.required];
+                formGroupConfig[`capacidad${i}`] = ['', Validators.required];
+                formGroupConfig[`sCnMEM${i}`] = ['', Validators.required];
+                formGroupConfig[`factor${i}`] = ['', Validators.required];
+                formGroupConfig[`bTension${i}`] = ['', Validators.required];
+                formGroupConfig[`aPublico${i}`] = ['', Validators.required];
             }
         }
 
@@ -254,7 +253,6 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
 
         if ( this.newQuoteForm.invalid )
         {
-            console.log(this.newQuoteForm);
             this._fuseConfirmationService.open({
                 title: 'Error',
                 message: 'Revisa que todos los campos estén llenos correctamente.',
@@ -272,15 +270,31 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
 
         this.newQuoteForm.disable();
 
-        localStorage.setItem('newQuote', JSON.stringify(this.newQuoteForm.value));
+        //localStorage.setItem('newQuote', JSON.stringify(this.newQuoteForm.value));
 
         this._quotesService.newQuote(this.newQuoteForm.value).subscribe((response) => {
-            localStorage.setItem('idQuote', response.quote.id);
+            //localStorage.setItem('idQuote', response.quote.id);
             this._router.navigate(['/quotes/preview', response.quote.id]);
         });
     }
 
     searchData(): void {
+        if (this.serviceNumber === '') {
+            this._fuseConfirmationService.open({
+                title: 'Error',
+                message: 'Ingresa un número de servicio.',
+                actions: {
+                    confirm: {
+                        label: 'Entendido'
+                    },
+                    cancel: {
+                        show: false
+                    }
+                }
+            });
+            return;
+        }
+
         this._quotesService.searchData(this.serviceNumber).subscribe((response) => {
             console.log(response);
         }, (error) => {
@@ -297,7 +311,7 @@ export class NewComponent implements OnInit, OnDestroy, AfterViewInit
                         }
                     }
                 });
-            }, 4000);
+            }, 3000);
         });
     }
 }

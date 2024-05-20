@@ -67,6 +67,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit
                 let annual = JSON.parse(quote.annualConsumption);
 
                 let data = {
+                    id: quote.id,
                     name: quote.name,
                     date: new Date(quote.created_at).toLocaleDateString(),
                     amount: annual.total,
@@ -97,5 +98,52 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit
     newQuote(): void
     {
         this._router.navigate(['quotes/new']);
+    }
+
+    seeQuote(id: Number): void
+    {
+        this._router.navigate(['/quotes/preview', id]);
+    }
+
+    deleteQuote(id: Number): void
+    {
+        let alert = this._fuseConfirmationService.open({
+            title: 'Advertencia',
+            message: '¿Estás seguro de que deseas eliminar esta cotización?',
+            actions: {
+                confirm: {
+                    label: 'Eliminar'
+                },
+                cancel: {
+                    show: true,
+                    label: 'Cancelar'
+                }
+            }
+        });
+
+        alert.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+                this._homeService.deleteQuote(id).subscribe((response) => {
+                    this.data.rows = this.data.rows.filter((quote) => quote.id !== id);
+
+                    this._fuseConfirmationService.open({
+                        title: 'Cotización eliminada',
+                        icon: {
+                            show: true,
+                            name: 'check',
+                            color: 'success'
+                        },
+                        message: 'La cotización ha sido eliminada correctamente',
+                        actions: {
+                            confirm: {
+                                label: 'Aceptar',
+                                color: 'primary'
+                            }
+                        }
+                    });
+                });
+            }
+
+        });
     }
 }

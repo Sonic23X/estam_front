@@ -34,4 +34,8 @@ export class HomeService
     getMyQuotes(): Observable<any> {
         return this._httpClient.get(`${environment.apiUrl}quotes/my`);
     }
+
+    deleteQuote(id: Number): Observable<any> {
+        return this._httpClient.delete(`${environment.apiUrl}quotes/${id}`);
+    }
 }
